@@ -1,0 +1,21 @@
+# Ubaidi CyberHawk Requirements
+# Python 3.10+ recommended
+
+# Core dependencies
+Flask==2.3.2
+python-dotenv==1.0.0
+
+# Google Sheets API
+google-auth==2.17.3
+google-auth-oauthlib==1.0.0
+google-auth-httplib2==0.1.0
+google-api-python-client==2.86.0
+
+# Security scanning
+requests==2.31.0
+beautifulsoup4==4.12.2
+
+# Optional (for enhanced features)
+gunicorn==20.1.0  # Production server
+python-dateutil==2.8.2  # Date handling
+pytest==7.4.0  # Testing

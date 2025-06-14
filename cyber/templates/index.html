@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubaidi CyberHawk - Cybersecurity Toolkit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0aff9d;
+            --secondary: #00f3ff;
+            --accent: #ff00c8;
+            --dark: #0a0a18;
+            --darker: #050510;
+            --light: #e0f7fa;
+            --terminal-bg: rgba(15, 20, 35, 0.95);
+            --terminal-border: rgba(0, 243, 255, 0.2);
+            --card-bg: rgba(20, 25, 45, 0.8);
+            --success: #0aff9d;
+            --warning: #ffb300;
+            --critical: #ff4d6d;
+            --info: #00f3ff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: var(--darker);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(10, 255, 157, 0.03) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 243, 255, 0.03) 0%, transparent 20%);
+            position: relative;
+            line-height: 1.6;
+        }
+        
+        /* Header styling */
+        header {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(5, 5, 16, 0.95);
+            border-bottom: 1px solid var(--terminal-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo-icon {
+            font-size: 2.2rem;
+            color: var(--primary);
+        }
+        
+        .branding {
+            display: flex;
+            gap: 12px;
+            font-size: 0.85rem;
+        }
+        
+        .brand-tag {
+            background: rgba(0, 243, 255, 0.1);
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--terminal-border);
+            font-weight: 500;
+        }
+        
+        /* Main layout */
+        .container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+            padding: 30px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--terminal-border);
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            height: fit-content;
+        }
+        
+        .sidebar-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            color: var(--primary);
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-item {
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-weight: 500;
+            background: rgba(15, 20, 35, 0.6);
+        }
+        
+        .nav-item:hover {
+            background: rgba(10, 255, 157, 0.15);
+        }
+        
+        .nav-item.active {
+            background: rgba(10, 255, 157, 0.2);
+            border-left: 4px solid var(--primary);
+        }
+        
+        /* Main content */
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--terminal-border);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 243, 255, 0.15);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--terminal-border);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--primary);
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .card-icon {
+            font-size: 1.4rem;
+        }
+        
+        /* Terminal styling */
+        .terminal {
+            background: var(--terminal-bg);
+            border-radius: 8px;
+            padding: 18px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            height: 280px;
+            overflow-y: auto;
+            border: 1px solid var(--terminal-border);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .terminal-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        
+        .terminal-line {
+            margin-bottom: 8px;
+            display: flex;
+            line-height: 1.4;
+        }
+        
+        .terminal-prompt {
+            color: var(--primary);
+            margin-right: 10px;
+            min-width: 180px;
+        }
+        
+        .blinking-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--primary);
+            vertical-align: middle;
+            margin-left: 4px;
+            animation: blink 1s infinite;
+        }
+        
+        /* Input styling */
+        .input-group {
+            display: flex;
+            margin-top: 18px;
+            gap: 12px;
+        }
+        
+        .input-group input, .input-group select, .input-group textarea {
+            flex: 1;
+            padding: 14px;
+            background: rgba(10, 15, 30, 0.7);
+            border: 1px solid var(--terminal-border);
+            border-radius: 8px;
+            color: var(--light);
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+        }
+        
+        .input-group button {
+            background: var(--primary);
+            color: var(--dark);
+            border: none;
+            padding: 0 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+        
+        .input-group button:hover {
+            background: #00cc7a;
+            transform: translateY(-2px);
+        }
+        
+        /* Result boxes */
+        .result-box {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 8px;
+            padding: 18px;
+            margin-top: 18px;
+            border: 1px solid var(--terminal-border);
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+        
+        .result-item {
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: rgba(10, 15, 30, 0.5);
+        }
+        
+        .result-icon {
+            font-size: 1.2rem;
+            min-width: 24px;
+            margin-top: 2px;
+        }
+        
+        .result-item.critical {
+            border-left: 4px solid var(--critical);
+        }
+        
+        .result-item.warning {
+            border-left: 4px solid var(--warning);
+        }
+        
+        .result-item.success {
+            border-left: 4px solid var(--success);
+        }
+        
+        .result-item.info {
+            border-left: 4px solid var(--info);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 25px;
+            margin-top: 40px;
+            border-top: 1px solid var(--terminal-border);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+        
+        /* Animations */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Responsive design */
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .branding {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(5, 5, 16, 0.5);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        /* Utility classes */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        .success-badge {
+            background: rgba(10, 255, 157, 0.15);
+            color: var(--success);
+        }
+        
+        .warning-badge {
+            background: rgba(255, 179, 0, 0.15);
+            color: var(--warning);
+        }
+        
+        .critical-badge {
+            background: rgba(255, 77, 109, 0.15);
+            color: var(--critical);
+        }
+        
+        .info-badge {
+            background: rgba(0, 243, 255, 0.15);
+            color: var(--info);
+        }
+        
+        /* Grid layout for larger cards */
+        .card-full {
+            grid-column: 1 / -1;
+        }
+        
+        /* ChatGPT WebView styling */
+        .chatgpt-container {
+            background: var(--terminal-bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--terminal-border);
+        }
+        
+        .chat-message {
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .user-message {
+            background: rgba(0, 243, 255, 0.1);
+            border-left: 3px solid var(--secondary);
+            margin-left: auto;
+            max-width: 80%;
+        }
+        
+        .ai-message {
+            background: rgba(10, 255, 157, 0.1);
+            border-left: 3px solid var(--primary);
+            margin-right: auto;
+            max-width: 90%;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 12px;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        /* Report styling */
+        .report-container {
+            background: var(--terminal-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            border: 1px solid var(--terminal-border);
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+        
+        .db-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        .db-connected {
+            background: rgba(10, 255, 157, 0.2);
+            color: var(--success);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-hawk logo-icon"></i>
+            <h1>UBAIDI CYBERHAWK</h1>
+        </div>
+        <div class="branding">
+            <span class="brand-tag">Python Backend</span>
+            <span class="brand-tag">Google Sheets DB</span>
+            <span class="brand-tag">Source: 2025</span>
+        </div>
+    </header>
+    
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-title">
+                <i class="fas fa-tools"></i>
+                <h3>TOOLKIT NAVIGATION</h3>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </li>
+                <li class="nav-item" data-section="vuln">
+                    <i class="fas fa-shield-alt"></i>
+                    Vulnerability Scan
+                </li>
+                <li class="nav-item" data-section="report">
+                    <i class="fas fa-file-alt"></i>
+                    Report Generator
+                </li>
+                <li class="nav-item" data-section="db">
+                    <i class="fas fa-database"></i>
+                    Vulnerability Database
+                </li>
+            </ul>
+            
+            <div class="sidebar-title" style="margin-top: 30px;">
+                <i class="fas fa-info-circle"></i>
+                <h3>SYSTEM STATUS</h3>
+            </div>
+            <div class="result-item success">
+                <i class="fas fa-plug"></i>
+                <div>
+                    <strong>Python Backend</strong>
+                    <p id="backend-status">Online <span class="db-connected db-status">Active</span></p>
+                </div>
+            </div>
+            <div class="result-item success">
+                <i class="fas fa-database"></i>
+                <div>
+                    <strong>Vulnerability DB</strong>
+                    <p id="db-status">Connected to Google Sheets <span class="db-connected db-status">Active</span></p>
+                </div>
+            </div>
+            <div class="result-item">
+                <i class="fas fa-table"></i>
+                <div>
+                    <strong>Database Records</strong>
+                    <p id="db-records">Loading...</p>
+                </div>
+            </div>
+            
+            <div class="sidebar-title" style="margin-top: 30px;">
+                <i class="fas fa-user-secret"></i>
+                <h3>DEVELOPER INFO</h3>
+            </div>
+            <div class="result-item info">
+                <i class="fas fa-code"></i>
+                <div>
+                    <strong>Developer</strong>
+                    <p>Samiullah Samejo</p>
+                </div>
+            </div>
+            <div class="result-item">
+                <i class="fas fa-envelope"></i>
+                <div>
+                    <strong>Contact</strong>
+                    <p>devsamiubaidi@gmail.com</p>
+                </div>
+            </div>
+            <div class="result-item">
+                <i class="fas fa-shield-alt"></i>
+                <div>
+                    <strong>Ethical Policy</strong>
+                    <p>Always obtain proper authorization</p>
+                </div>
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            <!-- Dashboard Overview Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-tachometer-alt card-icon"></i>
+                        <h2>SECURITY DASHBOARD</h2>
+                    </div>
+                    <span class="status-badge success-badge">Online</span>
+                </div>
+                <div class="terminal">
+                    <div class="terminal-content">
+                        <div class="terminal-line">
+                            <div class="terminal-prompt">cyberhawk@system:~$</div>
+                            <div>system_status --full</div>
+                        </div>
+                        <div class="terminal-line">
+                            <div class="terminal-prompt"></div>
+                            <div>System Time: <span id="current-time">14:38:45 UTC</span></div>
+                        </div>
+                        <div class="terminal-line">
+                            <div class="terminal-prompt"></div>
+                            <div>Backend: Python 3.10 | Flask 2.3</div>
+                        </div>
+                        <div class="terminal-line">
+                            <div class="terminal-prompt"></div>
+                            <div>Database: Google Sheets API</div>
+                        </div>
+                        <div class="terminal-line">
+                            <div class="terminal-prompt"></div>
+                            <div id="db-terminal-status">DB Status: Connecting to vulnerability database...</div>
+                        </div>
+                        <div class="terminal-line">
+                            <div class="terminal-prompt">cyberhawk@system:~$</div>
+                            <div>_<span class="blinking-cursor"></span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <input type="text" placeholder="Enter command...">
+                    <button>EXECUTE</button>
+                </div>
+            </div>
+            
+            <!-- Vulnerability Scanner Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-shield-alt card-icon"></i>
+                        <h2>VULNERABILITY SCANNER</h2>
+                    </div>
+                    <i class="fas fa-bug"></i>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="scan-url" placeholder="Enter URL to scan..." value="https://example.com">
+                    <button id="scan-btn">SCAN</button>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" id="scan-progress"></div>
+                </div>
+                <div class="result-box" id="vuln-results">
+                    <div class="result-item">
+                        <i class="fas fa-info-circle result-icon"></i>
+                        <div>
+                            <strong>Ready to Scan</strong>
+                            <p>Enter a URL to check for security vulnerabilities</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Report Generator Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-file-alt card-icon"></i>
+                        <h2>REPORT GENERATOR</h2>
+                    </div>
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="report-url" placeholder="Enter scanned URL..." value="https://example.com">
+                    <button id="generate-report">GENERATE</button>
+                </div>
+                <div class="chatgpt-container" id="chatgpt-webview">
+                    <div class="ai-message chat-message">
+                        <strong>CyberHawk AI:</strong> I can analyze vulnerability scan results and generate a professional security report. Enter a URL and click "Generate" to start.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Vulnerability Database Card -->
+            <div class="card card-full">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-database card-icon"></i>
+                        <h2>VULNERABILITY DATABASE</h2>
+                    </div>
+                    <i class="fas fa-table"></i>
+                </div>
+                <div class="input-group">
+                    <select id="db-query-type" style="flex: 0.3;">
+                        <option value="All">All</option>
+                        <option value="XSS">XSS</option>
+                        <option value="SQL Injection">SQL Injection</option>
+                        <option value="CSRF">CSRF</option>
+                        <option value="Clickjacking">Clickjacking</option>
+                        <option value="Misconfiguration">Misconfiguration</option>
+                    </select>
+                    <input type="text" id="db-search" placeholder="Search vulnerabilities...">
+                    <button id="db-search-btn">SEARCH</button>
+                </div>
+                <div class="result-box" id="db-results">
+                    <div class="result-item">
+                        <i class="fas fa-info-circle result-icon"></i>
+                        <div>
+                            <strong>Vulnerability Database</strong>
+                            <p>Search for vulnerabilities in our database</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <footer>
+        <p>© 2025 UBAIDI CYBERHAWK - Ethical Hacking Toolkit | Built by Samiullah Samejo</p>
+        <p>For educational and ethical purposes only. Always obtain proper authorization before security testing.</p>
+        <!-- <p>Database: https://docs.google.com/spreadsheets/d/14CqMK3g6FKchUCJNlg98i5qgvEQfqIPva2_xSKWL3kI</p> -->
+    </footer>
+
+    <script>
+        // DOM elements
+        const scanBtn = document.getElementById('scan-btn');
+        const generateReportBtn = document.getElementById('generate-report');
+        const dbSearchBtn = document.getElementById('db-search-btn');
+        const scanProgress = document.getElementById('scan-progress');
+        const vulnResults = document.getElementById('vuln-results');
+        const chatgptWebview = document.getElementById('chatgpt-webview');
+        const dbResults = document.getElementById('db-results');
+        const currentTime = document.getElementById('current-time');
+        const dbTerminalStatus = document.getElementById('db-terminal-status');
+        const dbStatus = document.getElementById('db-status');
+        const dbRecords = document.getElementById('db-records');
+        const backendStatus = document.getElementById('backend-status');
+
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit',
+                timeZoneName: 'short'
+            });
+            currentTime.textContent = timeString;
+        }
+        
+        setInterval(updateTime, 1000);
+        updateTime();
+        
+        // Update system status
+        function updateSystemStatus() {
+            fetch('/system-status')
+                .then(response => response.json())
+                .then(data => {
+                    currentTime.textContent = data.timestamp;
+                    dbTerminalStatus.textContent = `DB Status: ${data.db_status}`;
+                    dbRecords.textContent = `${data.db_records} vulnerabilities stored`;
+                    backendStatus.innerHTML = `${data.status} <span class="db-connected db-status">Active</span>`;
+                    dbStatus.innerHTML = `Connected to Google Sheets <span class="db-connected db-status">Active</span>`;
+                })
+                .catch(error => {
+                    console.error('Error fetching system status:', error);
+                    dbTerminalStatus.textContent = 'DB Status: Connection error';
+                });
+        }
+        
+        setInterval(updateSystemStatus, 5000);
+        updateSystemStatus();
+        
+        // Vulnerability scanner
+        scanBtn.addEventListener('click', () => {
+            const url = document.getElementById('scan-url').value;
+            if(!url) return;
+            
+            vulnResults.innerHTML = `
+                <div class="result-item">
+                    <i class="fas fa-circle-notch fa-spin result-icon"></i>
+                    <div>
+                        <strong>Scanning ${url}</strong>
+                        <p>Checking for security vulnerabilities...</p>
+                    </div>
+                </div>
+            `;
+            
+            scanProgress.style.width = '0%';
+            
+            // Start scan
+            fetch('/scan', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ url: url })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === 'scanning') {
+                    simulateScanProgress(data.progress);
+                }
+            });
+        });
+        
+        // Simulate scan progress
+        function simulateScanProgress(progress) {
+            scanProgress.style.width = `${progress}%`;
+            
+            if(progress < 100) {
+                setTimeout(() => {
+                    fetch('/scan-results', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            url: document.getElementById('scan-url').value,
+                            progress: progress
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data.status === 'scanning') {
+                            simulateScanProgress(data.progress);
+                        } else if(data.status === 'completed') {
+                            scanProgress.style.width = '100%';
+                            displayScanResults(data.results);
+                        }
+                    });
+                }, 800);
+            }
+        }
+        
+        // Display scan results
+        function displayScanResults(results) {
+            let html = '';
+            
+            results.forEach(result => {
+                let severityClass = 'info';
+                if(result.severity === 'High') severityClass = 'warning';
+                if(result.severity === 'Critical') severityClass = 'critical';
+                if(result.severity === 'Medium') severityClass = 'info';
+                
+                html += `
+                    <div class="result-item ${severityClass}">
+                        <i class="fas fa-${severityClass === 'critical' ? 'times-circle' : 
+                                         severityClass === 'warning' ? 'exclamation-triangle' : 
+                                         'info-circle'} result-icon"></i>
+                        <div>
+                            <strong>${result.vulnerability}</strong>
+                            <p>${result.description}</p>
+                            <p><strong>Remediation:</strong> ${result.remediation}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                <div class="result-item success">
+                    <i class="fas fa-check-circle result-icon"></i>
+                    <div>
+                        <strong>Scan Complete</strong>
+                        <p>Found ${results.length} vulnerabilities</p>
+                    </div>
+                </div>
+            `;
+            
+            vulnResults.innerHTML = html;
+        }
+        
+        // Report Generator
+        generateReportBtn.addEventListener('click', () => {
+            const url = document.getElementById('report-url').value || 'https://example.com';
+            const scanResults = [];
+            
+            // Get scan results from UI
+            document.querySelectorAll('#vuln-results .result-item').forEach(item => {
+                if(item.classList.contains('critical') || 
+                   item.classList.contains('warning') || 
+                   item.classList.contains('info')) {
+                    const title = item.querySelector('strong').textContent;
+                    const description = item.querySelector('p').textContent;
+                    const remediation = item.querySelector('p:nth-child(3)') ? 
+                                      item.querySelector('p:nth-child(3)').textContent.replace('Remediation: ', '') : 
+                                      'No remediation provided';
+                    
+                    let severity = 'Info';
+                    if(item.classList.contains('critical')) severity = 'Critical';
+                    if(item.classList.contains('warning')) severity = 'High';
+                    
+                    scanResults.push({
+                        vulnerability: title,
+                        severity: severity,
+                        description: description,
+                        remediation: remediation
+                    });
+                }
+            });
+            
+            if(scanResults.length === 0) {
+                chatgptWebview.innerHTML = `
+                    <div class="ai-message chat-message">
+                        <strong>CyberHawk AI:</strong> No scan results found. Please perform a vulnerability scan first.
+                    </div>
+                `;
+                return;
+            }
+            
+            chatgptWebview.innerHTML = `
+                <div class="ai-message chat-message">
+                    <strong>CyberHawk AI:</strong> Generating security report for ${url}...
+                </div>
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            
+            fetch('/generate-report', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    url: url,
+                    results: scanResults
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    chatgptWebview.innerHTML = `
+                        <div class="ai-message chat-message">
+                            <strong>CyberHawk AI:</strong> Here is your security assessment report for ${url}:
+                        </div>
+                        <div class="ai-message chat-message">
+                            <pre>${data.report}</pre>
+                        </div>
+                        <div class="ai-message chat-message">
+                            <strong>Note:</strong> This report was generated by CyberHawk AI. For comprehensive testing, engage a professional security team.
+                        </div>
+                    `;
+                }
+            });
+        });
+        
+        // Vulnerability database search
+        dbSearchBtn.addEventListener('click', () => {
+            const query = document.getElementById('db-search').value;
+            const type = document.getElementById('db-query-type').value;
+            
+            dbResults.innerHTML = `
+                <div class="result-item">
+                    <i class="fas fa-circle-notch fa-spin result-icon"></i>
+                    <div>
+                        <strong>Searching Database</strong>
+                        <p>Querying vulnerability database...</p>
+                    </div>
+                </div>
+            `;
+            
+            fetch('/search-db', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    query: query,
+                    type: type
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    displayDbResults(data.results);
+                } else {
+                    dbResults.innerHTML = `
+                        <div class="result-item warning">
+                            <i class="fas fa-exclamation-triangle result-icon"></i>
+                            <div>
+                                <strong>Database Error</strong>
+                                <p>${data.error || 'Unable to query database'}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+        });
+        
+        // Display database results
+        function displayDbResults(results) {
+            if(results.length === 0) {
+                dbResults.innerHTML = `
+                    <div class="result-item warning">
+                        <i class="fas fa-exclamation-triangle result-icon"></i>
+                        <div>
+                            <strong>No Results Found</strong>
+                            <p>Try a different search term or vulnerability type</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            
+            results.forEach(result => {
+                let severityClass = 'info';
+                if(result.severity === 'High') severityClass = 'warning';
+                if(result.severity === 'Critical') severityClass = 'critical';
+                if(result.severity === 'Medium') severityClass = 'info';
+                
+                html += `
+                    <div class="result-item ${severityClass}">
+                        <i class="fas fa-${severityClass === 'critical' ? 'times-circle' : 
+                                         severityClass === 'warning' ? 'exclamation-triangle' : 
+                                         'info-circle'} result-icon"></i>
+                        <div>
+                            <strong>${result.name} (${result.severity})</strong>
+                            <p>${result.description}</p>
+                            <p><strong>Remediation:</strong> ${result.remediation}</p>
+                            ${result.cve ? `<p><strong>CVE:</strong> ${result.cve}</p>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                <div class="result-item success">
+                    <i class="fas fa-check-circle result-icon"></i>
+                    <div>
+                        <strong>Search Complete</strong>
+                        <p>Found ${results.length} vulnerabilities</p>
+                    </div>
+                </div>
+            `;
+            
+            dbResults.innerHTML = html;
+        }
+        
+        // Navigation functionality
+        const navItems = document.querySelectorAll('.nav-item');
+        
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navItems.forEach(navItem => navItem.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
